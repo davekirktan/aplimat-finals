@@ -65,6 +65,7 @@
     </ApplicationDefinition>
     <Compile Include="Models\Attractor.cs" />
     <Compile Include="Utilities\AplimatUtils.cs" />
+    <Compile Include="Utilities\Gaussian.cs" />
     <Compile Include="Utilities\Randomizer.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -1,4 +1,6 @@
-﻿using aplimat_final_exam.Models;
+﻿using aplimat_core.utilities;
+using aplimat_final_exam.Models;
+using aplimat_final_exam.Utilities;
 using SharpGL;
 using System;
 using System.Collections.Generic;
@@ -73,14 +75,15 @@ namespace aplimat_final_exam
 
         }
 
-        private CubeMesh myCube = new CubeMesh();
+        private List<CubeMesh> myRocks = new List<CubeMesh>();
+        private CubeMesh Rock = new CubeMesh(-75.0f, -8.0f, 0);
+        private CubeMesh myPerson = new CubeMesh(-75.0f,-10,0);
+        private CubeMesh Platform = new CubeMesh(-76.0f, -15.0f, 0);
+        private Randomizer randMass = new Randomizer(1, 2);
+        private int counter = 0;
         private float speed = 0.1f;
         private float bulletSpeed = 3.0f;
 
-        private CubeMesh bullet = new CubeMesh()
-        {
-            Position = new Vector3(100, 100, 0)
-        };
 
         private void OpenGLControl_OpenGLDraw(object sender, SharpGL.SceneGraph.OpenGLEventArgs args)
         {
@@ -94,35 +97,56 @@ namespace aplimat_final_exam
             gl.LoadIdentity();
             gl.Translate(0.0f, 0.0f, -100.0f);
 
-            gl.Color(1.0, 0.0, 0.0);
-            myCube.Draw(gl);
+            counter++;
 
-            gl.Color(1.0, 1.0, 1.0);
-            bullet.Draw(gl);
+            gl.Color(1.0, 1.0, 0.0);
+            myPerson.Draw(gl);
+            myPerson.Scale = new Vector3(3.0f, 5.0f, 0);
 
-            if (Keyboard.IsKeyDown(Key.W))
-            { 
-                myCube.ApplyForce(Vector3.Up * speed);
-            }
+            gl.Color((byte)153,(byte) 76,(byte) 0);
+            Platform.Draw(gl);
+            Platform.Scale = new Vector3(5.0f, 2.0f, 0);
 
-            if (Keyboard.IsKeyDown(Key.D))
+            gl.Color((byte)192, (byte)192, (byte)192);
+            Rock.Mass = (float)Gaussian.Generate(randMass.Generate(), randMass.Generate());
+            //Rock.Scale = new Vector3(Rock.Mass, Rock.Mass, 0);
+            Rock.Draw(gl);
+            myRocks.Add(Rock);
+
+            if (counter % 10 == 0)
             {
-                myCube.ApplyForce(Vector3.Right * speed);
+                Rock.ApplyForce(Vector3.Right * 0.01f);
+                Rock.ApplyForce(Vector3.Up * 0.01f);
+                Rock.ApplyGravity();
             }
 
-            if (Keyboard.IsKeyDown(Key.A))
-            {
-                myCube.ApplyForce(Vector3.Left * speed);
-            }
-            if (Keyboard.IsKeyDown(Key.S))
-            {
-                myCube.ApplyForce(Vector3.Down * speed);
-            }
 
-            if (Mouse.LeftButton == MouseButtonState.Pressed)
-            {
+            //gl.Color(1.0, 1.0, 1.0);
+            //bullet.Draw(gl);
 
-            }
+            //if (Keyboard.IsKeyDown(Key.Space))
+            //{
+            //    Rock.Draw(gl);
+            //}
+
+            //if (Keyboard.IsKeyDown(Key.D))
+            //{
+            //    myCube.ApplyForce(Vector3.Right * speed);
+            //}
+
+            //if (Keyboard.IsKeyDown(Key.A))
+            //{
+            //    myCube.ApplyForce(Vector3.Left * speed);
+            //}
+            //if (Keyboard.IsKeyDown(Key.S))
+            //{
+            //    myCube.ApplyForce(Vector3.Down * speed);
+            //}
+
+            //if (Mouse.LeftButton == MouseButtonState.Pressed)
+            //{
+
+            //}
 
             //myCube.ApplyGravity();
 

@@ -4,25 +4,36 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace aplimat_final_exam.Utilities
+namespace aplimat_core.utilities
 {
-    public static class Randomizer
+    public class Randomizer
     {
-        public static double Generate(double min, double max)
+        private double d_min, d_max;
+        private int min, max;
+        private Random random;
+
+        public Randomizer(int min, int max)
         {
-            return new Random().NextDouble() * (max - min) + min;
+            this.min = min;
+            this.max = max + 1;
+            random = new Random();
         }
 
-        public static double Gaussian(double mean = 0, double stdDev = 1)
+        public Randomizer(double d_min, double d_max)
         {
-            Random r = new Random();
+            this.d_min = d_min;
+            this.d_max = d_max + 1;
+            this.random = new Random();
+        }
 
-            var u1 = r.NextDouble();
-            var u2 = r.NextDouble();
+        public int Generate()
+        {
+            return random.Next(min, max);
+        }
 
-            var randomStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2);
-
-            return mean + stdDev * randomStdNormal;
+        public double GenerateDouble()
+        {
+            return random.NextDouble() * (d_max - d_min) + d_min;
         }
     }
 }
