@@ -20,7 +20,7 @@ namespace aplimat_final_exam.Models
             this.Acceleration += (force / Mass); //force accumulation
         }
 
-        public void ApplyGravity(float scalar = 0.1f)
+        public void ApplyGravity(float scalar = 0.01f)
         {
             this.Acceleration += (new Vector3(0, -scalar * Mass, 0) / Mass);
         } 

@@ -110,14 +110,21 @@ namespace aplimat_final_exam
             gl.Color((byte)192, (byte)192, (byte)192);
             Rock.Mass = (float)Gaussian.Generate(randMass.Generate(), randMass.Generate());
             //Rock.Scale = new Vector3(Rock.Mass, Rock.Mass, 0);
-            Rock.Draw(gl);
-            myRocks.Add(Rock);
 
-            if (counter % 10 == 0)
+
+            if (counter >= 20)
             {
                 Rock.ApplyForce(Vector3.Right * 0.01f);
                 Rock.ApplyForce(Vector3.Up * 0.01f);
                 Rock.ApplyGravity();
+                Rock.Draw(gl);
+                myRocks.Add(Rock);
+            }
+            
+            if(counter == 120)
+            {
+                counter = 0;
+                Rock.Position = new Vector3(-75.0f, -8.0f, 0);
             }
 
 
