@@ -77,12 +77,13 @@ namespace aplimat_final_exam
 
         private List<CubeMesh> myRocks = new List<CubeMesh>();
         private CubeMesh Rock = new CubeMesh(-75.0f, -8.0f, 0);
-        private CubeMesh myPerson = new CubeMesh(-75.0f,-10,0);
-        private CubeMesh Platform = new CubeMesh(-76.0f, -15.0f, 0);
         private Randomizer randMass = new Randomizer(1, 2);
+        private Randomizer randPos = new Randomizer(-50,50);
+        private Liquid Ocean = new Liquid(0, 0, 100, 50, 0.8f);
+        private Randomizer colorRNG = new Randomizer(0, 1);
+        private Attractor blackHole = new Attractor();
+
         private int counter = 0;
-        private float speed = 0.1f;
-        private float bulletSpeed = 3.0f;
 
 
         private void OpenGLControl_OpenGLDraw(object sender, SharpGL.SceneGraph.OpenGLEventArgs args)
@@ -97,35 +98,99 @@ namespace aplimat_final_exam
             gl.LoadIdentity();
             gl.Translate(0.0f, 0.0f, -100.0f);
 
+
+            Ocean.Draw(gl);
+            gl.Color(1.0f, 1.0f, 1.0f);
+
+            //gl.Color((byte)192, (byte)192, (byte)192);
+            //Rock.Mass = (float)Gaussian.Generate(randMass.Generate(), randMass.Generate());
+            //Rock.Scale = new Vector3(Rock.Mass, Rock.Mass, 0);
+            //Rock.ApplyForce(Vector3.arcRight * 0.01f);
+            //Rock.ApplyGravity();
+
+            gl.Color(0, 0, 0);
+            blackHole.Position.x = 0;
+            blackHole.Position.y = -40;
+            blackHole.Mass = 5;
+            blackHole.Scale = new Vector3(blackHole.Mass, blackHole.Mass, 0);
+            blackHole.Draw(gl);
+
+
+            if (myRocks.Count <= 20)
+            {
+                for (int x = 0; x < 20; x++)
+                {
+                    myRocks.Add(new CubeMesh());
+                    myRocks[x].Position = new Vector3(randPos.Generate(), randPos.Generate(), 0);
+                    myRocks[x].Mass = (float)Gaussian.Generate(randMass.Generate(), randMass.Generate());
+                    myRocks[x].Scale = new Vector3(myRocks[x].Mass, myRocks[x].Mass, 0);
+                }
+            }
+
+            foreach (var rock in myRocks)
+            {
+                gl.Color((byte)192, (byte)192, (byte)192);
+                rock.ApplyGravity();
+                rock.Draw(gl);
+                if (Ocean.Contains(rock))
+                {
+                    var dragForce = Ocean.CalculateDragForce(rock);
+                    rock.ApplyForce(dragForce);
+                    rock.ApplyForce(blackHole.CalculateAttraction(rock));
+                }
+                if (rock.Position.y <= -40)
+                {
+                    rock.Position.y = -40;
+                    rock.Velocity.y *= -1;
+                }
+            }
+
             counter++;
 
-            gl.Color(1.0, 1.0, 0.0);
-            myPerson.Draw(gl);
-            myPerson.Scale = new Vector3(3.0f, 5.0f, 0);
+            //for (int x = 0; x < 10; x++)
+            //{
+            //    myRocks.Add(new CubeMesh());
+            //    myRocks[x].Position = new Vector3(-50 - (x * 10), 30, 0);
+            //    gl.Color((byte)192, (byte)192, (byte)192);
+            //    myRocks[x].Mass = (float)Gaussian.Generate(randMass.Generate(), randMass.Generate());
+            //    myRocks[x].Scale = new Vector3(Rock.Mass, Rock.Mass, 0);
+            //    myRocks[x].ApplyGravity();
+            //    myRocks[x].Draw(gl);
+            //    if (Ocean.Contains(myRocks[x]))
+            //    {
+            //        var dragForce = Ocean.CalculateDragForce(myRocks[x]);
+            //        //myRocks[x].ApplyForce(dragForce);
+            //        //myRocks[x].ApplyForce(blackHole.CalculateAttraction(myRocks[x]));
+            //    }
+            //    if (myRocks[x].Position.y <= -40)
+            //    {
+            //        myRocks[x].Position.y = -40;
+            //        myRocks[x].Velocity.y *= -1;
+            //    }
+            //}
 
-            gl.Color((byte)153,(byte) 76,(byte) 0);
-            Platform.Draw(gl);
-            Platform.Scale = new Vector3(5.0f, 2.0f, 0);
-
-            gl.Color((byte)192, (byte)192, (byte)192);
-            Rock.Mass = (float)Gaussian.Generate(randMass.Generate(), randMass.Generate());
-            //Rock.Scale = new Vector3(Rock.Mass, Rock.Mass, 0);
 
 
-            if (counter >= 20)
-            {
-                Rock.ApplyForce(Vector3.Right * 0.01f);
-                Rock.ApplyForce(Vector3.Up * 0.01f);
-                Rock.ApplyGravity();
-                Rock.Draw(gl);
-                myRocks.Add(Rock);
-            }
-            
-            if(counter == 120)
-            {
-                counter = 0;
-                Rock.Position = new Vector3(-75.0f, -8.0f, 0);
-            }
+            //if (counter >= 20)
+            //{
+            //    Rock.ApplyForce(Vector3.Right * 0.01f);
+            //    Rock.ApplyForce(Vector3.Up * 0.01f);
+            //    Rock.ApplyGravity();
+            //    Rock.Draw(gl);
+            //    myRocks.Add(Rock);
+            //    if (Ocean.Contains(Rock))
+            //    {
+            //        var dragForce = Ocean.CalculateDragForce(Rock);
+            //        Rock.ApplyForce(dragForce);
+
+            //    }
+            //}
+
+            //if(counter == 120)
+            //{
+            //    counter = 0;
+            //    Rock.Position = new Vector3(-75.0f, -8.0f, 0);
+            //}
 
 
             //gl.Color(1.0, 1.0, 1.0);

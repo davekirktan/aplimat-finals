@@ -9,7 +9,7 @@ namespace aplimat_final_exam.Models
 {
     public class Attractor : CubeMesh
     {
-        public float G = 0.05f;
+        public float G = 5f;
 
         public Vector3 CalculateAttraction(Movable movable)
         {
